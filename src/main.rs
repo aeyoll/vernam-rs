@@ -2,12 +2,20 @@
 extern crate clap;
 use clap::App;
 
+mod lib;
+use lib::Vernam;
+
 fn main() {
     let yaml = load_yaml!("cli.yml");
     let matches = App::from_yaml(yaml).get_matches();
 
     match matches.subcommand() {
-        ("encrypt", Some(_sub)) => {
+        ("encrypt", Some(submatches)) => {
+            let v = Vernam {
+                message: submatches.value_of("message").unwrap().to_string(),
+                key: submatches.value_of("key").unwrap().to_string(),
+            };
+            v.encrypt();
         }
         ("decrypt", Some(_sub)) => {
         }

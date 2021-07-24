@@ -1,9 +1,11 @@
+use std::u32;
+
 use failure::Error;
 
 #[derive(Debug, Default)]
 pub struct Vernam {
-    message: String,
-    key: String,
+    pub message: String,
+    pub key: String,
 }
 
 impl Vernam {
@@ -14,7 +16,17 @@ impl Vernam {
         }
     }
 
+    pub fn get_char_alphabet_index(&self, char: char) -> u32 {
+        let letter_code: u32 = char as u32;
+        return letter_code - 65;
+    }
+
     pub fn encrypt(self) -> Result<String, Error> {
+        for (i, char) in self.message.chars().enumerate() {
+            let cai = self.get_char_alphabet_index(char);
+            println!("{}, {}, {}", i, char, cai);
+        }
+
         Ok("DLWJLWGPCIAWURBCPBPVJTWZNKUFHXWLCL".to_string())
     }
 
