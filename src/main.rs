@@ -15,10 +15,10 @@ fn main() {
                 message: submatches.value_of("message").unwrap().to_string(),
                 key: submatches.value_of("key").unwrap().to_string(),
             };
-            v.encrypt();
+            let encrypted_message = v.encrypt().unwrap();
+            println!("{}", encrypted_message);
         }
-        ("decrypt", Some(_sub)) => {
-        }
+        ("decrypt", Some(_sub)) => {}
         _ => {
             println!("Command not implemented");
         }

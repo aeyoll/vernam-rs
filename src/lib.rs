@@ -1,4 +1,4 @@
-use std::u32;
+use std::u8;
 
 use failure::Error;
 
@@ -10,24 +10,37 @@ pub struct Vernam {
 
 impl Vernam {
     pub fn new(message: String, key: String) -> Self {
-        Vernam {
-            message,
-            key,
-        }
+        Vernam { message, key }
     }
 
-    pub fn get_char_alphabet_index(&self, char: char) -> u32 {
-        let letter_code: u32 = char as u32;
+    pub fn get_char_alphabet_index(&self, char: char) -> u8 {
+        let letter_code: u8 = char as u8;
         return letter_code - 65;
     }
 
+    pub fn get_char_from_alphabet_index(&self, index: u8) -> char {
+        let letter_index = index + 65;
+        let char= letter_index as char;
+        return char;
+    }
+
     pub fn encrypt(self) -> Result<String, Error> {
-        for (i, char) in self.message.chars().enumerate() {
-            let cai = self.get_char_alphabet_index(char);
-            println!("{}, {}, {}", i, char, cai);
+        let message_chars = self.message.chars();
+        let mut key_chars = self.key.chars();
+        let mut encrypted_message: Vec<char> = Vec::new();
+
+        for message_char in message_chars {
+            let message_char_index = self.get_char_alphabet_index(message_char);
+            let key_char = key_chars.next().unwrap();
+            let key_char_index = self.get_char_alphabet_index(key_char);
+            let mut sum = message_char_index + key_char_index;
+            if sum > 25 {
+                sum -= 26;
+            }
+            encrypted_message.push(self.get_char_from_alphabet_index(sum));
         }
 
-        Ok("DLWJLWGPCIAWURBCPBPVJTWZNKUFHXWLCL".to_string())
+        Ok(encrypted_message.into_iter().collect())
     }
 
     pub fn decrypt(self) -> Result<String, Error> {
@@ -46,7 +59,7 @@ mod tests {
             key: String::from("AHKJDJELKPOIHROPHGLERTOIJHQTHGOLWHFD"),
         };
 
-        assert_eq!(v.encrypt().unwrap() , "DLWJLWGPCIAWURBCPBPVJTWZNKUFHXWLCL");
+        assert_eq!(v.encrypt().unwrap(), "DLWJLWGPCIAWURBCPBPVJTWZNKUFHXWLCL");
     }
 
     #[test]
@@ -56,6 +69,6 @@ mod tests {
             key: String::from("AHKJDJELKPOIHROPHGLERTOIJHQTHGOLWHFD"),
         };
 
-        assert_eq!(v.decrypt().unwrap() , "DEMAINCESTMONANNIVERSAIREDEMARIAGE");
+        assert_eq!(v.decrypt().unwrap(), "DEMAINCESTMONANNIVERSAIREDEMARIAGE");
     }
 }
