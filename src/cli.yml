@@ -1,19 +1,27 @@
 name: vernam
 version: "0.1.0"
 author: Jean-Philippe Bidegain
-about: Encrypt or decrypt vernam messa
-args:
-    - message:
-        help: Message to encrypt/decrypt
-        required: true
-        index: 1
-    - key:
-        help: Key used to encrypt/decrypt
-        required: true
-        index: 2
-
+about: Encrypt or decrypt vernam message
 subcommands:
     - encrypt:
         about: Encrypt a message
+        args:
+            - message:
+                help: Message to encrypt/decrypt
+                required: true
+                index: 1
+            - key:
+                help: Key used to encrypt/decrypt
+                required: true
+                index: 2
     - decrypt:
         about: Decrypt a message
+        args:
+            - message:
+                help: Message to encrypt/decrypt
+                required: true
+                index: 1
+            - key:
+                help: Key used to encrypt/decrypt
+                required: true
+                index: 2
