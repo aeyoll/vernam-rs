@@ -11,13 +11,12 @@ pub struct Vernam {
 impl Vernam {
     pub fn get_char_alphabet_index(&self, char: char) -> u8 {
         let letter_code: u8 = char as u8;
-        return letter_code - 65;
+        letter_code - 65
     }
 
     pub fn get_char_from_alphabet_index(&self, index: u8) -> char {
         let letter_index = index + 65;
-        let char = letter_index as char;
-        return char;
+        letter_index as char
     }
 
     pub fn encrypt(self) -> Result<String, Error> {
