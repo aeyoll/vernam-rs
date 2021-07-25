@@ -1,6 +1,6 @@
 use std::u8;
 
-use failure::Error;
+use failure::{Error, bail};
 
 #[derive(Debug, Default)]
 pub struct Vernam {
@@ -9,9 +9,14 @@ pub struct Vernam {
 }
 
 impl Vernam {
-    pub fn get_char_alphabet_index(&self, char: char) -> u8 {
+    pub fn get_char_alphabet_index(&self, char: char) -> Result<u8, Error> {
         let letter_code: u8 = char as u8;
-        letter_code - 65
+
+        if letter_code < 65 || letter_code > 90 {
+            bail!("Invalid characted \"{}\", must be in A-Z range.", char)
+        }
+
+        Ok(letter_code - 65)
     }
 
     pub fn get_char_from_alphabet_index(&self, index: u8) -> char {
@@ -25,9 +30,9 @@ impl Vernam {
         let mut encrypted_message: Vec<char> = Vec::new();
 
         for message_char in message_chars {
-            let message_char_index = self.get_char_alphabet_index(message_char);
+            let message_char_index = self.get_char_alphabet_index(message_char)?;
             let key_char = key_chars.next().unwrap();
-            let key_char_index = self.get_char_alphabet_index(key_char);
+            let key_char_index = self.get_char_alphabet_index(key_char)?;
             let mut sum = message_char_index + key_char_index;
 
             if sum > 25 {
@@ -46,9 +51,9 @@ impl Vernam {
         let mut decrypted_message: Vec<char> = Vec::new();
 
         for message_char in message_chars {
-            let mut message_char_index = self.get_char_alphabet_index(message_char);
+            let mut message_char_index = self.get_char_alphabet_index(message_char)?;
             let key_char = key_chars.next().unwrap();
-            let key_char_index = self.get_char_alphabet_index(key_char);
+            let key_char_index = self.get_char_alphabet_index(key_char)?;
 
             if key_char_index > message_char_index {
                 message_char_index += 26;
