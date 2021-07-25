@@ -5,6 +5,10 @@ extern crate clap;
 use clap::App;
 
 mod lib;
+
+#[macro_use]
+extern crate failure;
+
 use failure::Error;
 use lib::Vernam;
 
@@ -14,18 +18,33 @@ fn app() -> Result<(), Error> {
 
     match matches.subcommand() {
         ("encrypt", Some(submatches)) => {
+            let message = submatches.value_of("message").unwrap().to_string();
+            let key = submatches.value_of("key").unwrap().to_string();
+
+            if key.len() < message.len() {
+                bail!("Key length must be equal or greater than the message")
+            }
+
             let v = Vernam {
-                message: submatches.value_of("message").unwrap().to_string(),
-                key: submatches.value_of("key").unwrap().to_string(),
+                message,
+                key,
             };
             let encrypted_message = v.encrypt().unwrap();
             println!("{}", encrypted_message);
         }
         ("decrypt", Some(submatches)) => {
+            let message = submatches.value_of("message").unwrap().to_string();
+            let key = submatches.value_of("key").unwrap().to_string();
+
+            if key.len() < message.len() {
+                bail!("Key length must be equal or greater than the message")
+            }
+
             let v = Vernam {
-                message: submatches.value_of("message").unwrap().to_string(),
-                key: submatches.value_of("key").unwrap().to_string(),
+                message,
+                key,
             };
+
             let decrypted_message = v.decrypt().unwrap();
             println!("{}", decrypted_message);
         }
